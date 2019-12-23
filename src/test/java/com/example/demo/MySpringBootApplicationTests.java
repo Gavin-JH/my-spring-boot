@@ -1,7 +1,7 @@
 package com.example.demo;
 
 import com.example.demo.model.AyUser;
-import com.example.demo.server.AyUserService;
+import com.example.demo.service.AyUserService;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -86,7 +86,14 @@ public class MySpringBootApplicationTests {
         ayUserService.save(ayUser);
         //删除数据
         ayUserService.delete("3");
-
+    }
+    @Test
+    public void testTransaction() {
+        AyUser ayUser = new AyUser();
+        ayUser.setId("3");
+        ayUser.setName("Gavin");
+        ayUser.setPassword("123678");
+        ayUserService.save(ayUser);
     }
 
 }

@@ -1,4 +1,4 @@
-package com.example.demo.server;
+package com.example.demo.service;
 
 import com.example.demo.model.AyUser;
 import org.springframework.data.domain.Page;
@@ -6,7 +6,6 @@ import org.springframework.data.domain.Pageable;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 /**
  * Created by Gavin on 2019/12/20.
