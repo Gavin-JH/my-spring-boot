@@ -7,6 +7,8 @@ import org.junit.runner.RunWith;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.lang.Nullable;
@@ -96,4 +98,48 @@ public class MySpringBootApplicationTests {
         ayUserService.save(ayUser);
     }
 
+    /**
+     * redis测试
+     */
+    //模板类
+    @Resource
+    private RedisTemplate redisTemplate;
+
+    @Resource
+    private StringRedisTemplate stringRedisTemplate;
+
+    @Test
+    public void testRedis() {
+        //增 key：name，value：ay
+        redisTemplate.opsForValue().set("name", "ay");
+        String name = (String) redisTemplate.opsForValue().get("name");
+        System.out.println(name);
+        //删除
+        redisTemplate.delete("name");
+        //更新
+        redisTemplate.opsForValue().set("name", "al");
+        //查询
+        name = stringRedisTemplate.opsForValue().get("name");
+        System.out.println(name);
+    }
+    //缓存测试
+    @Test
+    public void testFindById() {
+        Long redisUserSize = 0L;
+        //查询id = 1 的数据，该数据存在于redis缓存中
+        AyUser ayUser = ayUserService.findById("1");
+        redisUserSize = redisTemplate.opsForList().size("ALL_USER_LIST");
+        System.out.println("目前缓存中的用户数量为：" + redisUserSize);
+        System.out.println("--->>> id: " + ayUser.getId() + " name:" + ayUser.getName());
+        //查询id = 2 的数据，该数据存在于redis缓存中
+        AyUser ayUser1 = ayUserService.findById("2");
+        redisUserSize = redisTemplate.opsForList().size("ALL_USER_LIST");
+        System.out.println("目前缓存中的用户数量为：" + redisUserSize);
+        System.out.println("--->>> id: " + ayUser1.getId() + " name:" + ayUser1.getName());
+        //查询id = 4 的数据，该数据不存在于redis缓存中，存在于数据库中
+        AyUser ayUser3 = ayUserService.findById("4");
+        System.out.println("--->>> id: " + ayUser3.getId() + " name:" + ayUser3.getName());
+        redisUserSize = redisTemplate.opsForList().size("ALL_USER_LIST");
+        System.out.println("目前缓存中的用户数量为：" + redisUserSize);
+    }
 }

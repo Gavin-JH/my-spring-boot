@@ -5,6 +5,7 @@ import com.example.demo.repository.AyUserRepository;
 import com.example.demo.service.AyUserService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -23,9 +24,28 @@ public class AyUserServiceImpl implements AyUserService {
     private AyUserRepository ayUserRepository;
 
 
+    //Redis所需代码
+    private RedisTemplate redisTemplate;
+    private static final String ALL_USER = "ALL_USER_LIST";
+
     @Override
     public AyUser findById(String id) {
-        return ayUserRepository.findById(id).get();
+        //1、查询Redis缓存中的所有数据
+        List<AyUser> ayUserList = redisTemplate.opsForList().range(ALL_USER, 0, -1);
+        if (ayUserList != null && ayUserList.size() > 0) {
+            for (AyUser user : ayUserList) {
+                if (user.getId().equals(id)) {
+                    return user;
+                }
+            }
+        }
+        //2、查询数据库中数据
+        AyUser ayUser = ayUserRepository.findById(id).get();
+        if (ayUser != null) {
+            //3、间数据插入到redis
+            redisTemplate.opsForList().leftPush(ALL_USER, ayUser);
+        }
+        return ayUser;
     }
 
     @Override

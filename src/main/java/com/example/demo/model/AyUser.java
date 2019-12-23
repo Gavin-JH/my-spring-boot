@@ -3,13 +3,14 @@ package com.example.demo.model;
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.io.Serializable;
 
 /**
  * Created by Gavin on 2019/12/20.
  */
 @Entity//实体类
 @Table(name="ay_user")
-public class AyUser {
+public class AyUser implements Serializable{
     @Id
     private String id;
     private String name;
