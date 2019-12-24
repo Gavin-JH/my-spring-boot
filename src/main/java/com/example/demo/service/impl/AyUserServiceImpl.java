@@ -3,6 +3,8 @@ package com.example.demo.service.impl;
 import com.example.demo.model.AyUser;
 import com.example.demo.repository.AyUserRepository;
 import com.example.demo.service.AyUserService;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -64,9 +66,11 @@ public class AyUserServiceImpl implements AyUserService {
         return saveUser;
     }
 
+    Logger logger = LogManager.getLogger(this.getClass());
     @Override
     public void delete(String id) {
         ayUserRepository.deleteById(id);
+        logger.info("userId:"+id+"用户被删除");
     }
 
     @Override

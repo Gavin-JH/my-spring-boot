@@ -25,7 +25,7 @@ public class AyUserListener implements ServletContextListener {
     private AyUserService ayUserService;
     private static final String ALL_USER = "ALL_USER_LIST";
 
-   // Logger logger = LogManager.getLogger(this.getClass());
+    Logger logger = LogManager.getLogger(this.getClass());
 
     @Override
     public void contextInitialized(ServletContextEvent servletContextEvent) {
@@ -38,16 +38,16 @@ public class AyUserListener implements ServletContextListener {
         //真实项目中需要注释掉
         //range(ALL_USER, 0, -1)取链表中的全部元素，0表示第一个，-1表示最后一个
         List<AyUser> queryUserList = redisTemplate.opsForList().range(ALL_USER, 0, -1);
-        System.out.println("缓存中目前的用户数有：" + queryUserList.size() + " 人");
-        System.out.println("ServletContext上下文初始化");
-       /* logger.info("ServletContext上下文初始化");
-        logger.info("缓存中目前的用户数有：" + queryUserList.size() + " 人");*/
+        //System.out.println("缓存中目前的用户数有：" + queryUserList.size() + " 人");
+        //System.out.println("ServletContext上下文初始化");
+        logger.info("ServletContext上下文初始化");
+        logger.info("缓存中目前的用户数有：" + queryUserList.size() + " 人");
     }
 
     @Override
     public void contextDestroyed(ServletContextEvent servletContextEvent) {
-        System.out.println("ServletContext上下文销毁");
-       // logger.info("ServletContext上下文销毁");
+       // System.out.println("ServletContext上下文销毁");
+       logger.info("ServletContext上下文销毁");
     }
 }
 
